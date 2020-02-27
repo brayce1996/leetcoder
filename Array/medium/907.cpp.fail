@@ -1,0 +1,72 @@
+class Pair {
+public:
+    int index;
+    int value;
+    
+    Pair(int index, int value) {
+        this->index = index;
+        this->value = value;
+    }
+    
+    bool operator < (const Pair& p) const {
+        return (value < p.value);
+    }
+};
+
+class Solution {
+public:
+    int sumSubarrayMins(vector<int>& A) {
+        vector<Pair> pairList;
+        vector<int> levelLimit;
+        int mod = myPow(10, 9) + 7;
+        
+        // init
+        for (int i = 0; i < A.size(); i++) { // O(n)
+            Pair newPair(i, A[i]);
+            pairList.push_back(newPair);
+            
+            // init limit for each level
+            levelLimit.push_back(A.size() - i);
+        }
+        
+        sort(pairList.begin(), pairList.end()); // O(nlogn)
+        
+        bool isFinished = false;
+        int sum = 0;
+        
+        for (int i = 0; i < pairList.size() && !isFinished; i++) {
+            isFinished = true; // guess finishing
+            for (int level = 0; level < levelLimit.size(); level+=1) {
+                if (levelLimit[level] > 0) isFinished = false;
+                else continue;
+                int levelWindowWidth = level + 1;
+                int times = min4(pairList[i].index + 1, pairList.size() - pairList[i].index, levelLimit[level], levelWindowWidth);
+                levelLimit[level] -= times;
+                sum += (pairList[i].value * times) % mod;
+                sum %= mod;
+            }
+            cout << "[" << pairList[i].value << "]  [" << pairList[i].index << "] " << sum << endl;
+            printLevInfo(levelLimit);
+        }
+        return sum;
+    }
+    
+    int min4(int a, int b, int c, int d) {
+        return min(a, min(b, min(c, d)));
+    }
+    
+    int myPow(int x, int p) {
+      if (p == 0) return 1;
+      if (p == 1) return x;
+
+      int tmp = myPow(x, p/2);
+      if (p%2 == 0) return tmp * tmp;
+      else return x * tmp * tmp;
+    }
+    void printLevInfo(vector<int>& levVec) {
+        cout << "level info: " << endl;
+        for (int i = 0; i < levVec.size(); i++) {
+            cout << "["<< i << "] " << levVec[i] << endl;
+        }
+    }
+};
