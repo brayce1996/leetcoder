@@ -40,7 +40,7 @@ public:
         mid = targetSpot; // reset
         high = nums.size() - 1;
         while (mid < high) {
-            int rightMid = (mid + high) / 2 + (mid + high) % 2; // flooring
+            int rightMid = (mid + high) / 2 + (mid + high) % 2; // ceiling
             
             if (nums[rightMid] == target) mid = rightMid;
             else high = rightMid - 1;
