@@ -7,15 +7,19 @@ public:
         if (numRows >= s.length() || numRows < 2) return s;
         
         string result = "";
-        for (int row = numRows; row > 0; row--) {
-            int index = numRows - row;
+        for (int row = 0; row < numRows; row++) {
+            int index = row;
             for (int col = 0; index < s.length(); col++) {
                 result += s[index];
-                int step = (col % 2) ? (numRows - row) * 2 : (row - 1) * 2;
                 
-                // special cases for top and bottom rows
-                if (step == 0)
-                    step = (row - 1 == 0) ? (numRows - row) * 2 : (row - 1) * 2;
+                int step;
+                if (row == 0) {
+                    step = (numRows - row - 1) * 2;
+                } else if (row == numRows - 1) {
+                    step = row * 2;
+                } else {
+                    step = (col % 2) ? row * 2 : (numRows - row - 1) * 2;
+                }
                 
                 index += step;
             }
